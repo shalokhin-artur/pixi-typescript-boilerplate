@@ -16,7 +16,7 @@ export default class Game {
   private randomContent = new RandomContent()
   private activeTask: null | Tasks = null;
   private flame = new Flame()
-  
+  private stats = new Stats()
 
   constructor() {
     this.app = new Application({
@@ -27,7 +27,6 @@ export default class Game {
     document.body.appendChild(this.app.view);
     this.app.renderer.view.style.width = '100%';
     this.app.renderer.view.style.height = 'auto';
-    new Stats()
 }
   public loadResources() {
     Loader.shared.add([
@@ -47,7 +46,8 @@ export default class Game {
     this.app.stage.addChild(this.flame.container)
     this.app.stage.addChild(this.menu.container)
     this.app.stage.addChild(this.backToMenu.container)
-    
+
+    this.app.ticker.add(this.animate.bind(this))
   }
 
   private manageBackToMenu() {
@@ -93,5 +93,11 @@ export default class Game {
           break;
       }
     })
+  }
+
+  private animate(delta: number) {
+    this.stats.update();
+    this.cardStack.update();
+    this.flame.update(delta);
   }
 }

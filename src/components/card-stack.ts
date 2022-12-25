@@ -1,4 +1,4 @@
-import { Container, Loader, Sprite, Ticker } from "pixi.js";
+import { Container, Loader, Sprite } from "pixi.js";
 import { Group, Tween } from "tweedle.js";
 import { SCREEN_HEIGHT, SCREEN_WIDTH } from "../constants";
 
@@ -10,7 +10,6 @@ const CARD_AMOUNT = 144
 export default class CardStack {
   readonly container = new Container()
   private interval: NodeJS.Timer | null = null
-  ticker?: Ticker
 
   constructor () {
     this.container.sortableChildren = true
@@ -45,8 +44,6 @@ export default class CardStack {
   }
   
   public clear() {
-    this.ticker?.stop()
-    this.ticker?.destroy()
     this.container.removeChildren()
     if (this.interval) {
       clearInterval(this.interval)
@@ -56,10 +53,6 @@ export default class CardStack {
   public play() {
     let cursor = CARD_AMOUNT;
     let zIndex = 0;
-
-    this.ticker = Ticker.shared.add(() => {
-      Group.shared.update();
-    })
 
     this.interval = setInterval(() => {
       const sprite = this.container.children[cursor - 1] as Sprite
@@ -74,5 +67,9 @@ export default class CardStack {
       cursor -= 1
       zIndex += 1
     }, 1000)
+  }
+
+  public update() {
+    Group.shared.update();
   }
 }
